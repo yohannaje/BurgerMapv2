@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Place searches</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Search for up to 200 places with Radar Search</title>
     <style>
       html, body {
         height: 100%;
@@ -13,10 +14,10 @@
         height: 100%;
       }
     </style>
-    <script>
-// This example requires the Places library. Include the libraries=places
-// parameter when you first load the API. For example:
-// <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+<script type="text/javascript">
+
+
 
 var map;
 var infoWindow;
@@ -60,28 +61,32 @@ function callback(results, status) {
   }
 }
 
-function addMarker(place) {
+
+function createMarker(place) {
+  var placeLoc = place.geometry.location;
   var marker = new google.maps.Marker({
     map: map,
     position: place.geometry.location,
     icon: {
-      url: 'http://maps.gstatic.com/mapfiles/circle.png',
+      url: 'https://s3.amazonaws.com/com.cartodb.users-assets.production/production/0xbunny/assets/20150929061600pinfinal.png',
       anchor: new google.maps.Point(10, 10),
-      scaledSize: new google.maps.Size(10, 17)
+      scaledSize: new google.maps.Size(24, 30)
     }
   });
 
   google.maps.event.addListener(marker, 'click', function() {
-    service.getDetails(place, function(result, status) {
-      if (status !== google.maps.places.PlacesServiceStatus.OK) {
-        console.error(status);
-        return;
-      }
-      infoWindow.setContent(result.name);
-      infoWindow.open(map, marker);
-    });
-  });
-}
+     service.getDetails(place, function(result, status) {
+       if (status !== google.maps.places.PlacesServiceStatus.OK) {
+         console.error(status);
+         return;
+       }
+       infoWindow.setContent(result.name);
+       infoWindow.open(map, marker);
+     });
+   });
+ }
+
+
 
     </script>
   </head>
