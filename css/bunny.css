@@ -1,0 +1,12 @@
+.navbar-brand img{
+  float: none !important;
+  margin-left: 200%;
+
+}
+
+@media (max-width: 767px) {
+  .navbar-brand img {
+    margin-left: 30%;
+
+  }
+}
