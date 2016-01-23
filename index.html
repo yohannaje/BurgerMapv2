@@ -18,6 +18,16 @@
 // parameter when you first load the API. For example:
 // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
+window.onload = function() {
+  var startPos;
+  var geoSuccess = function(position) {
+    startPos = position;
+    document.getElementById('startLat').innerHTML = startPos.coords.latitude;
+    document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+  };
+  navigator.geolocation.getCurrentPosition(geoSuccess);
+};
+
 var map;
 var infoWindow;
 var service;
@@ -67,7 +77,7 @@ function addMarker(place) {
     icon: {
       url: 'https://s3.amazonaws.com/com.cartodb.users-assets.production/production/0xbunny/assets/20150929061600pinfinal.png',
       anchor: new google.maps.Point(10, 10),
-      scaledSize: new google.maps.Size(10, 17)
+      scaledSize: new google.maps.Size(24, 30)
     }
   });
 
