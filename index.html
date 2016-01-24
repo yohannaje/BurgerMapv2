@@ -19,6 +19,14 @@
 // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
 window.onload = function() {
+
+};
+
+var map;
+var infoWindow;
+var service;
+
+function initMap() {
   var startPos;
   var geoOptions = {
     enableHighAccuracy: true
@@ -28,6 +36,16 @@ window.onload = function() {
     startPos = position;
     document.getElementById('startLat').innerHTML = startPos.coords.latitude;
     document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: startPos.coords.latitude , lng: startPos.coords.longitude},
+      zoom: 15,
+      styles: [{
+        stylers: [{ visibility: 'simplified' }]
+      }, {
+        elementType: 'labels',
+        stylers: [{ visibility: 'off' }]
+      }]
+    });
   };
   var geoError = function(error) {
     console.log('Error occurred. Error code: ' + error.code);
@@ -39,22 +57,8 @@ window.onload = function() {
   };
 
   navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
-};
-var map;
-var infoWindow;
-var service;
 
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -33.867, lng: 151.206},
-    zoom: 15,
-    styles: [{
-      stylers: [{ visibility: 'simplified' }]
-    }, {
-      elementType: 'labels',
-      stylers: [{ visibility: 'off' }]
-    }]
-  });
+
 
   infoWindow = new google.maps.InfoWindow();
   service = new google.maps.places.PlacesService(map);
