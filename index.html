@@ -34,8 +34,8 @@ function initMap() {
 
   var geoSuccess = function(position) {
     startPos = position;
-    document.getElementById('startLat').innerHTML = startPos.coords.latitude;
-    document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+    //document.getElementById('startLat').innerHTML = startPos.coords.latitude;
+    //document.getElementById('startLon').innerHTML = startPos.coords.longitude;
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: startPos.coords.latitude , lng: startPos.coords.longitude},
       zoom: 15,
@@ -65,7 +65,7 @@ function initMap() {
 
   // The idle event is a debounced event, so we can query & listen without
   // throwing too many requests at the server.
-  map.addListener('idle', performSearch);
+//  map.addListener('idle', performSearch);
 }
 
 function performSearch() {
