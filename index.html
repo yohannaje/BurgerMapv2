@@ -6,7 +6,6 @@
 
     <link rel="stylesheet" href="css/estilos.min.css">
     <style>
-
       html, body {
         height: 100%;
         margin: 0;
@@ -15,27 +14,7 @@
       #map {
         height: 100%;
       }
-      .infobox-wrapper {
-    display:none;
-}
-#infobox {
-    border:2px solid black;
-    margin-top: 8px;
-    background:#333;
-    color:#FFF;
-    font-family:Arial, Helvetica, sans-serif;
-    font-size:12px;
-    padding: .5em 1em;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    text-shadow:0 -1px #000000;
-    -webkit-box-shadow: 0 0  8px #000;
-    box-shadow: 0 0 8px #000;
-}
-
     </style>
-    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
     <script>
 // This example requires the Places library. Include the libraries=places
 // parameter when you first load the API. For example:
@@ -48,7 +27,6 @@ window.onload = function() {
 var map;
 var infoWindow;
 var service;
-var infobox;
 
 function initMap() {
   var startPos;
@@ -68,7 +46,7 @@ function initMap() {
         // How you would like to style the map.
         // This is where you would paste any style found on Snazzy Maps.
         styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}]
-  };
+    };
 
     startPos = position;
     //document.getElementById('startLat').innerHTML = startPos.coords.latitude;
@@ -84,13 +62,9 @@ function initMap() {
       }]
     });
 
-
-
-
-  //  infoWindow = new google.maps.InfoWindow();
+    infoWindow = new google.maps.InfoWindow();
     service = new google.maps.places.PlacesService(map);
     map.addListener('idle', performSearch);
-
   };
   var geoError = function(error) {
     console.log('Error occurred. Error code: ' + error.code);
@@ -141,33 +115,22 @@ function addMarker(place) {
     }
   });
 
-  infobox = new InfoBox({
-        content: document.getElementById("infobox"),
-        disableAutoPan: false,
-        maxWidth: 150,
-        pixelOffset: new google.maps.Size(-140, 0),
-        zIndex: null,
-        boxStyle: {
-           background: "url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/examples/tipbox.gif') no-repeat",
-           opacity: 0.75,
-           width: "280px"
-       },
-       closeBoxMargin: "12px 4px 2px 2px",
-       closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
-       infoBoxClearance: new google.maps.Size(1, 1)
-   });
-
-   google.maps.event.addListener(marker, 'click', function() {
-       infobox.open(map, this);
-       map.panTo(position);
-   });
-}
+  google.maps.event.addListener(marker, 'click', function() {
+    service.getDetails(place, function(result, status) {
+      if (status !== google.maps.places.PlacesServiceStatus.OK) {
+        console.error(status);
+        return;
+      }
+      infoWindow.setContent(result.name);
+      infoWindow.open(map, marker);
+    });
+  });
 }
 
     </script>
   </head>
   <body>
-<div id="header"></div>
+
     <div id="map"></div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQfcDN9E0XZQcuYDEV4WaYK0J_4Q63mi4&signed_in=true&libraries=places&callback=initMap" async defer></script>
 
