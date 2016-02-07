@@ -27,6 +27,7 @@ window.onload = function() {
 
 var map;
 var infoWindow;
+var infoBubble;
 var service;
 
 function initMap() {
@@ -63,11 +64,11 @@ function initMap() {
       }]
     });
 
-  //  infoWindow = new google.maps.InfoWindow();
+  infoWindow = new google.maps.InfoWindow();
   infoBubble = new InfoBubble({
      map: map,
      content: '<div class="mylabel">The label</div>',
-     position: new google.maps.LatLng(-32.0, 149.0),
+     position:  place.geometry.location,
      shadowStyle: 1,
      padding: 0,
      backgroundColor: 'rgb(57,57,57)',
