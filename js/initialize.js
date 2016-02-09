@@ -6,6 +6,7 @@ function initialize() {
   var startPos;
   var browserSupportFlag =  new Boolean();
   var allinfo;
+  var serviceA, serviceB;
 
 
   loc = new google.maps.LatLng(-34.6033, -58.3817); //sets the map in Buenos Aires
@@ -19,7 +20,8 @@ function initialize() {
   });
 
   var infowindow = new google.maps.InfoWindow();
-  service = new google.maps.places.PlacesService(map);
+
+
 
   //asks for the user position
   if(navigator.geolocation) {
@@ -33,14 +35,28 @@ function initialize() {
   }
 
   map.addListener('idle', performSearch);
-
   function performSearch() {
+
     var request = {
-    bounds: map.getBounds(),
-    keyword: 'hamburgueseria'
-  };
+      bounds: map.getBounds(),
+
+      keyword: 'burger'
+    };
+
+    var service = new google.maps.places.PlacesService(map);
     service.radarSearch(request, callback);
-  }
+    serviceA = service;
+    var request2 = {
+      bounds: map.getBounds(),
+
+      keyword: 'hamburgueseria'
+    };
+    var service2 = new google.maps.places.PlacesService(map);
+    service2.radarSearch(request2, callback);
+
+}
+
+
 
   function callback(results, status) {
     if (status !== google.maps.places.PlacesServiceStatus.OK) {
@@ -69,7 +85,7 @@ function initialize() {
 
     google.maps.event.addListener(marker, 'click', function(e) {
 
-      service.getDetails(place, function(result, status) {
+      serviceA.getDetails(place, function(result, status) {
 
         if (status !== google.maps.places.PlacesServiceStatus.OK) {
           console.error(status);
@@ -175,7 +191,6 @@ function initialize() {
         if (!this.div_) {
 
           this.div_ = document.createElement("div");
-
           this.setBoxStyle_();
 
           if (typeof this.content_.nodeType === "undefined") {
@@ -276,7 +291,6 @@ function initialize() {
       InfoBox.prototype.addClickHandler_ = function () {
 
         var closeBox;
-
         if (this.closeBoxURL_ !== "") {
 
           closeBox = this.div_.firstChild;
@@ -395,6 +409,7 @@ function initialize() {
 
           // Apply style values from the style sheet defined in the boxClass parameter:
           this.div_.className = this.boxClass_;
+          //this.div_.id="sidebar";
 
           // Clear existing inline style values:
           this.div_.style.cssText = "";
@@ -828,20 +843,14 @@ function initialize() {
       infobox = new InfoBox({
           content: allinfo.name + '<br> <br>' + allinfo.formatted_address + '</strong><br>' + allinfo.website  + '</strong><br>' + allinfo.rating + '</strong><br>' + allinfo.formatted_phone_number ,
           disableAutoPan: false,
-          maxWidth: 150,
-          pixelOffset: new google.maps.Size(-140, 0),
-          zIndex: null,
-          boxStyle: {
-             background: "url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/examples/tipbox.gif') no-repeat",
-             opacity: 0.75,
-             width: "280px"
-         },
+
          closeBoxMargin: "12px 4px 2px 2px",
          closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
          infoBoxClearance: new google.maps.Size(1, 1)
      });
 
      infobox.open(map, this);
+       $("#sidebar").animate({left: "0"}, 200);
       }); //closes service.getdetails
     });
 
