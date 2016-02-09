@@ -92,7 +92,7 @@
             }
             var infoWindow = new google.maps.InfoWindow();
 
-            infoWindow.setContent(result.name);
+            infoWindow.setContent( result.name + '</strong><br>' + result.formatted_address + '</strong><br>' + result.website  + '</strong><br>' + result.rating + '</strong><br>' + result.formatted_phone_number );
             infoWindow.open(map, marker);
           });
         });
