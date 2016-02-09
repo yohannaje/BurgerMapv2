@@ -15,14 +15,16 @@
   </style>
 
   <link rel="stylesheet" href="css/estilos.min.css">
-  
+
   <script type="text/javascript">
 
     function initialize() {
       var initialLocation;
-      var loc, map, marker, infobox;
+      var loc, map, marker;
       var startPos;
       var browserSupportFlag =  new Boolean();
+
+
 
       loc = new google.maps.LatLng(-34.6033, -58.3817); //sets the map in Buenos Aires
       //creates the map
@@ -34,6 +36,9 @@
          styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}]
       });
 
+      var infowindow = new google.maps.InfoWindow();
+      service = new google.maps.places.PlacesService(map);
+
       //asks for the user position
       if(navigator.geolocation) {
         browserSupportFlag = true;
@@ -44,7 +49,8 @@
           handleNoGeolocation(browserSupportFlag);
         });
       }
-      //while the geolocation works performs the search for places
+
+      map.addListener('idle', performSearch);
 
       function performSearch() {
         var request = {
@@ -73,16 +79,36 @@
             anchor: new google.maps.Point(10, 10),
             scaledSize: new google.maps.Size(24, 30)
           }
+
         });
 
         google.maps.event.addListener(marker, 'click', function() {
-          map.setZoom(8);
+
+          service.getDetails(place, function(result, status) {
+
+            if (status !== google.maps.places.PlacesServiceStatus.OK) {
+              console.error(status);
+            return;
+            }
+            var infoWindow = new google.maps.InfoWindow();
+
+            infoWindow.setContent(result.name);
+            infoWindow.open(map, marker);
+          });
         });
+
+        // google.maps.event.addListener(marker, 'click', function() {
+        //   map.setZoom(8);
+        // });
       }
 
 
-      service = new google.maps.places.PlacesService(map);
-      map.addListener('idle', performSearch);
+
+
+
+
+
+
 }
 
 </script>
@@ -94,12 +120,6 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQfcDN9E0XZQcuYDEV4WaYK0J_4Q63mi4&signed_in=true&libraries=places&callback=initialize" async defer></script>
 
 <div id="map"></div>
-<br>
 
-<div class="infobox-wrapper">
-    <div id="infobox">
-        The contents of your info box. It's very easy to create and customize.
-    </div>
-</div>
 </body>
 </html>
