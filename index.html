@@ -2,6 +2,13 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="author" content="Bunnny">
+  <meta name="description" content="Mapa de Hamburgueserias de la ciudad de Buenos Aires">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="js/jquery-2.1.3.min.js"></script>
+  <script src="js/initialize.js"></script>
+
 
   <style media="screen">
     html, body {
@@ -12,114 +19,75 @@
     #map {
       height: 100%;
     }
+
+    .infobox-wrapper {
+    display:none;
+}
+#infobox {
+    border:2px solid black;
+    margin-top: 8px;
+    background:#333;
+    color:#FFF;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+    padding: .5em 1em;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    text-shadow:0 -1px #000000;
+    -webkit-box-shadow: 0 0  8px #000;
+    box-shadow: 0 0 8px #000;
+}
+
   </style>
 
   <link rel="stylesheet" href="css/estilos.min.css">
 
-  <script type="text/javascript">
 
-    function initialize() {
-      var initialLocation;
-      var loc, map, marker;
-      var startPos;
-      var browserSupportFlag =  new Boolean();
+<script type="text/javascript" charset="UTF-8" src="./example window_files/common.js"></script><script type="text/javascript" charset="UTF-8" src="./example window_files/map.js"></script><script type="text/javascript" charset="UTF-8" src="./example window_files/util.js"></script><script type="text/javascript" charset="UTF-8" src="./example window_files/marker.js"></script><script type="text/javascript" charset="UTF-8" src="./example window_files/overlay.js"></script><script type="text/javascript" charset="UTF-8" src="./example window_files/onion.js"></script><script type="text/javascript" charset="UTF-8" src="./example window_files/stats.js"></script><script type="text/javascript" charset="UTF-8" src="./example window_files/controls.js"></script></head>
 
 
-
-      loc = new google.maps.LatLng(-34.6033, -58.3817); //sets the map in Buenos Aires
-      //creates the map
-      map = new google.maps.Map(document.getElementById("map"), {
-         zoom: 11,
-         center: loc,
-         mapTypeId: google.maps.MapTypeId.ROADMAP,
-         //snazzy maps style
-         styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}]
-      });
-
-      var infowindow = new google.maps.InfoWindow();
-      service = new google.maps.places.PlacesService(map);
-
-      //asks for the user position
-      if(navigator.geolocation) {
-        browserSupportFlag = true;
-        navigator.geolocation.getCurrentPosition(function(position) {
-          initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-          map.setCenter(initialLocation);
-        }, function() {
-          handleNoGeolocation(browserSupportFlag);
-        });
-      }
-
-      map.addListener('idle', performSearch);
-
-      function performSearch() {
-        var request = {
-        bounds: map.getBounds(),
-        keyword: 'hamburgueseria'
-      };
-        service.radarSearch(request, callback);
-      }
-
-      function callback(results, status) {
-        if (status !== google.maps.places.PlacesServiceStatus.OK) {
-          console.error(status);
-        return;
-        }
-        for (var i = 0, result; result = results[i]; i++) {
-          addMarker(result);
-        }
-      }
-
-      function addMarker(place) {
-        var marker = new google.maps.Marker({
-          map: map,
-          position: place.geometry.location,
-          icon: {
-            url: 'https://s3.amazonaws.com/com.cartodb.users-assets.production/production/0xbunny/assets/20150929061600pinfinal.png',
-            anchor: new google.maps.Point(10, 10),
-            scaledSize: new google.maps.Size(24, 30)
-          }
-
-        });
-
-        google.maps.event.addListener(marker, 'click', function() {
-
-          service.getDetails(place, function(result, status) {
-
-            if (status !== google.maps.places.PlacesServiceStatus.OK) {
-              console.error(status);
-            return;
-            }
-            var infoWindow = new google.maps.InfoWindow();
-
-            infoWindow.setContent( result.name + '</strong><br>' + result.formatted_address + '</strong><br>' + result.website  + '</strong><br>' + result.rating + '</strong><br>' + result.formatted_phone_number );
-            infoWindow.open(map, marker);
-          });
-        });
-
-        // google.maps.event.addListener(marker, 'click', function() {
-        //   map.setZoom(8);
-        // });
-      }
-
-
-
-
-
-
-
-
-}
-
-</script>
 <title>Burger Map - Buenos Aires Burger Joints</title>
+
 </head>
 
 <body>
     <div id="header"></div>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQfcDN9E0XZQcuYDEV4WaYK0J_4Q63mi4&signed_in=true&libraries=places&callback=initialize" async defer></script>
+  <!-- <script src="js/infobox.js"></script> -->
+
 
 <div id="map"></div>
 
+<div id="sidebar">
+
+
+      <div id="spacing"></div>
+      <div id="cerrar"></div>
+      <div id="menu">
+        <ul>
+          <li>
+            <a href="#"><img src="css/img/icons/joint.png" alt="" /></a>
+          </li>
+          <li>
+            <a href="#"><img src="css/img/icons/veggie.png" alt="" /></a>
+          </li>
+          <li>
+            <a href="#"><img src="css/img/icons/open.png" alt="" /></a>
+          </li>
+          <li>
+            <a href="#"><img src="css/img/icons/delivery.png" alt="" /></a>
+          </li>
+          <li>
+            <a href="#"><img src="css/img/icons/credit.png" alt="" /></a>
+          </li>
+          <li>
+            <a href="#"><img src="css/img/icons/price.png" alt="" /></a>
+          </li>
+        </ul>
+      </div>
+</div>
+
+    <script src="js/funciones.js"></script>
 </body>
 </html>
