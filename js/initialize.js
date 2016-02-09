@@ -844,7 +844,14 @@ function initialize() {
       };
 
       infobox = new InfoBox({
-          content: allinfo.name + '<br> <br>' + allinfo.formatted_address + '</strong><br>' + allinfo.website  + '</strong><br>' + allinfo.rating + '</strong><br>' + allinfo.formatted_phone_number ,
+
+          //https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=photo_reference&key=AddYourOwnKeyHere
+
+
+          content: '<img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=' + allinfo.photos[1].photo_reference + '&key=AIzaSyAQfcDN9E0XZQcuYDEV4WaYK0J_4Q63mi4"> ' + '</br></br>'+  allinfo.name + '</br></br>'+ allinfo.opening_hours + '</br></br>'+ allinfo.formatted_address + '</strong><br>' + allinfo.website  + '</strong><br>' + allinfo.rating + '</strong><br>' + allinfo.formatted_phone_number +'</br>' + allinfo.reviews + '<br />' + allinfo.formatted_phone_number,
+
+
+          //content: '<img src="  ' + allinfo.icon + ' "/> ' + '</br></br>'+  allinfo.name + '</br></br>'+ allinfo.opening_hours + '</br></br>'+ allinfo.formatted_address + '</strong><br>' + allinfo.website  + '</strong><br>' + allinfo.rating + '</strong><br>' + allinfo.formatted_phone_number +'</br>' + allinfo.reviews,
           disableAutoPan: false,
 
          closeBoxMargin: "12px 4px 2px 2px",
