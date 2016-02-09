@@ -1,7 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+  <style media="screen">
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  #map {
+    height: 100%;
+  }
+
+  .infobox-wrapper {
+  display:none;
+}
+#infobox {
+  border:2px solid black;
+  margin-top: 8px;
+  background:#333;
+  color:#FFF;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:12px;
+  padding: .5em 1em;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  text-shadow:0 -1px #000000;
+  -webkit-box-shadow: 0 0  8px #000;
+  box-shadow: 0 0 8px #000;
+}
+
+  </style>
+      <link rel="stylesheet" href="css/estilos.min.css">
+<script type="text/javascript" src="js/infobox.js"></script>
 <script type="text/javascript">
 function initialize() {
     var initialLocation;
@@ -9,30 +40,62 @@ function initialize() {
     var startPos;
     var browserSupportFlag =  new Boolean();
 
-    loc = new google.maps.LatLng(34.6033, 58.3817);
+    loc = new google.maps.LatLng(-34.6033, -58.3817);
 
     map = new google.maps.Map(document.getElementById("map"), {
-         zoom: 12,
+         zoom: 11,
 
          center: loc,
-         mapTypeId: google.maps.MapTypeId.ROADMAP
+         mapTypeId: google.maps.MapTypeId.ROADMAP,
+         styles: [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}]
+
     });
 
-    marker = new google.maps.Marker({
-        map: map,
-        position: loc,
-        visible: true
-    });
 
     if(navigator.geolocation) {
     browserSupportFlag = true;
     navigator.geolocation.getCurrentPosition(function(position) {
       initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
       map.setCenter(initialLocation);
-      marker.setPosition(initialLocation);
     }, function() {
       handleNoGeolocation(browserSupportFlag);
     });
+
+
+    function performSearch() {
+      var request = {
+        bounds: map.getBounds(),
+        keyword: 'hamburgueseria'
+      };
+      service.radarSearch(request, callback);
+    }
+
+    function callback(results, status) {
+      if (status !== google.maps.places.PlacesServiceStatus.OK) {
+        console.error(status);
+        return;
+      }
+      for (var i = 0, result; result = results[i]; i++) {
+        addMarker(result);
+      }
+    }
+
+    function addMarker(place) {
+      var marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location,
+        icon: {
+          url: 'https://s3.amazonaws.com/com.cartodb.users-assets.production/production/0xbunny/assets/20150929061600pinfinal.png',
+          anchor: new google.maps.Point(10, 10),
+          scaledSize: new google.maps.Size(24, 30)
+        }
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+          infobox.open(map, this);
+          map.panTo(initialLocation);
+      });
+    }
+
     infobox = new InfoBox({
          content: document.getElementById("infobox"),
          disableAutoPan: false,
@@ -48,11 +111,10 @@ function initialize() {
         closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
         infoBoxClearance: new google.maps.Size(1, 1)
     });
+    service = new google.maps.places.PlacesService(map);
+    map.addListener('idle', performSearch);
 
-    google.maps.event.addListener(marker, 'click', function() {
-        infobox.open(map, this);
-        map.panTo(initialLocation);
-    });
+
   }
 
 
@@ -61,16 +123,16 @@ function initialize() {
 }
 google.maps.event.addDomListener(window, 'load', initialize);
 </script>
-<title>Creating and Using an InfoBox</title>
+<title>Burger Map - Buenos Aires Burger Joints</title>
 </head>
 
 <body>
+    <div id="header"></div>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQfcDN9E0XZQcuYDEV4WaYK0J_4Q63mi4&signed_in=true&libraries=places&callback=initialize" async defer></script>
 
-<div id="map" style="width: 100%; height: 300px"></div>
+<div id="map"></div>
 <br>
 
-InfoBox as an easily customizable replacement for an InfoWindow. Click on the marker to see the infobox generated with custom html &amp; css.
 <div class="infobox-wrapper">
     <div id="infobox">
         The contents of your info box. It's very easy to create and customize.
