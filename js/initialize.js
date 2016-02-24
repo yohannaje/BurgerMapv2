@@ -7,7 +7,7 @@ function initialize() {
   var startPos;
   var browserSupportFlag =  new Boolean();
   var allinfo;
-  var serviceA, serviceB;
+  var service, serviceB;
 
 
   loc = new google.maps.LatLng(-34.6033, -58.3817); //sets the map in Buenos Aires
@@ -35,6 +35,7 @@ function initialize() {
   }
 
   map.addListener('idle', performSearch);
+
   function performSearch() {
 
     var request = {
@@ -43,32 +44,34 @@ function initialize() {
       keyword: 'burger'
     };
 
-    var service = new google.maps.places.PlacesService(map);
+    service = new google.maps.places.PlacesService(map);
     service.radarSearch(request, callback);
-    serviceA = service;
+
     var request2 = {
       bounds: map.getBounds(),
 
       keyword: 'hamburgueseria'
     };
-    var service2 = new google.maps.places.PlacesService(map);
-    service2.radarSearch(request2, callback);
+
+    //var service2 = new google.maps.places.PlacesService(map);
+    service.radarSearch(request2, callback);
 
     $(".gm-style-cc").hide();
-
 }
 
 
 
-  function callback(results, status) {
-    if (status !== google.maps.places.PlacesServiceStatus.OK) {
-      console.error(status);
-    return;
-    }
-    for (var i = 0, result; result = results[i]; i++) {
-      addMarker(result);
-    }
+function callback(results, status) {
+  console.log(results);
+  if (status !== google.maps.places.PlacesServiceStatus.OK) {
+    console.error(status);
+  return;
   }
+
+  for (var i = 0, result; result = results[i]; i++) {
+    addMarker(result);
+  }
+}
 
   function addMarker(place) {
     var marker = new google.maps.Marker({
@@ -87,13 +90,14 @@ function initialize() {
 
     google.maps.event.addListener(marker, 'click', function(e) {
 
-      serviceA.getDetails(place, function(result, status) {
+      service.getDetails(place, function(result, status) {
 
         if (status !== google.maps.places.PlacesServiceStatus.OK) {
           console.error(status);
-        return;
+          return;
         }
-          allinfo = result;
+
+        allinfo = result;
 
 
 
@@ -848,7 +852,7 @@ function initialize() {
           //https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=photo_reference&key=AddYourOwnKeyHere
 
 
-          content: '<img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=' + allinfo.photos[1].photo_reference + '&key=AIzaSyAQfcDN9E0XZQcuYDEV4WaYK0J_4Q63mi4"> ' + '</br></br>'+  allinfo.name + '</br></br>'+ allinfo.opening_hours + '</br></br>'+ allinfo.formatted_address + '</strong><br>' + allinfo.website  + '</strong><br>' + allinfo.rating + '</strong><br>' + allinfo.formatted_phone_number +'</br>' + allinfo.reviews + '<br />' + allinfo.formatted_phone_number,
+          content: allinfo.name + '</br></br>'+ allinfo.opening_hours + '</br></br>'+ allinfo.formatted_address + '</strong><br>' + allinfo.website  + '</strong><br>' + allinfo.rating + '</strong><br>' + allinfo.formatted_phone_number +'</br>' + allinfo.reviews + '<br />' + allinfo.formatted_phone_number,
 
 
           //content: '<img src="  ' + allinfo.icon + ' "/> ' + '</br></br>'+  allinfo.name + '</br></br>'+ allinfo.opening_hours + '</br></br>'+ allinfo.formatted_address + '</strong><br>' + allinfo.website  + '</strong><br>' + allinfo.rating + '</strong><br>' + allinfo.formatted_phone_number +'</br>' + allinfo.reviews,
@@ -868,9 +872,8 @@ function initialize() {
 
   }
 
-
-
 }
+
 $(document).ready(function() {
 
 
